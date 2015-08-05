@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>BR Crime Mapper</title>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/roboto.min.css" rel="stylesheet">
+    <link href="css/material.min.css" rel="stylesheet">
+    <link href="css/ripples.min.css" rel="stylesheet">
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">BR Crime Mapper</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+
+            <li><a href="#contact">Disclaimer</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="col-lg-12" style="margin-top:100px;padding-left:200px;padding-right:200px;">
+<div class="row">
+      <div class="col-lg-8">
+        <div class="well bs-component">
+          <legend id="reportHeader"></legend>
+          <input id="pac-input" class="controls" type="text" placeholder="Enter address to find recent crimes nearby">
+          <div id="map-canvas"></div>
+       </div>
+      </div>
+
+      <div class="col-lg-4">
+          <div class="well bs-component">
+              <form class="form-horizontal">
+                      <legend>Search Options</legend>
+                      
+                      <div class="form-group">
+                          
+                          <div class="col-lg-12">
+                            <label for="select" class="control-label">Crimes</label>
+                              <select multiple="" class="form-control" id="crimeTypeSelect">
+                                  <option value="ASSAULT" selected>Assault</option>
+                                  <option value="BATTERY">Battery</option>
+                                  <option value="BUSINESS ROBBERY">Business Robbery</option>
+                                  <option value="CRIMINAL DAMAGE TO PROPERTY">Criminal Damage To Property</option>
+                                  <option value="FIREARM">Firearm</option>
+                                  <option value="HOMICIDE">Homicide</option>
+                                  <option value="INDIVIDUAL ROBBERY">Individual Robbery</option>
+                                  <option value="NARCOTICS">Narcotics</option>
+                                  <option value="NON_RESIDENTIAL BURGLARY"> Non-Residential Burglary</option>
+                                  <option value="NUISANCE">Nuisance</option>
+                                  <option value="RESIDENTIAL BURGLARY">Residential Burglary</option>
+                                  <option value="ROBBERY">Robbery</option>
+                                  <option value="THEFT">Theft</option>
+                                  <option value="VEHICLE BURGLARY">Vehicle Burglary</option>
+                                  <option value="VICE">Vice</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          
+                          <div class="col-lg-12">
+                            <label for="select" class="control-label">Search Radius (in miles)</label>
+                              <select class="form-control" id="radiusSelect">
+                                  <option value="805">.5</option>
+                                  <option value="1609" selected>1</option>
+                                  <option value="3219">2</option>
+                                  <option value="4828">3</option>
+                                  <option value="8047">5</option>
+                                  <option value="16093">10</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          
+                          <div class="col-lg-12">
+                            <label for="select" class="control-label">Date Range</label>
+                      <div id="reportRange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                          <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+                          <span></span> <b class="caret"></b>
+                      </div>
+                      </div>
+                      </div>
+                      <div class="form-group">
+                          <div class="col-lg-12">
+                              <div id="refreshButton" class="btn btn-primary">Reload Results<div class="ripple-wrapper"></div></div>
+                          </div>
+                      </div>
+              </form>
+          <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div></div>
+      </div>
+</div>
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places,geometry"></script>
+    <script type="text/javascript" src="js/fontawesome-markers.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/ripples.min.js"></script>
+    <script type="text/javascript" src="js/material.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <script>
+        $(document).ready(function() {
+            // This command is used to initialize some elements and make them work properly
+            $.material.init();
+        });
+    </script>
+  </body>
+</html>
