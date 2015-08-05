@@ -1,4 +1,4 @@
-
+ 
 function initializeMap() {
   var mapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -137,9 +137,9 @@ function initializeMap() {
     searchBox.setBounds(bounds);
   });
   google.maps.event.addListener(map, 'idle', function(ev){
-    // update the coordinates here
+    
     var bounds = map.getBounds();
-    var ne = bounds.getNorthEast(); // LatLng of the north-east corner
+    var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
     console.log(ne + ', ' + sw);
   });
@@ -155,12 +155,12 @@ $(function() {
         $('#reportRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     }
     cb(moment().subtract(29, 'days'), moment());
-
+ 
     $('#reportRange').daterangepicker({
         
         'minDate': '01/01/2011',
         'maxDate': moment(),
-        'startDate': moment().subtract(6, 'days'),
+        'startDate': moment().subtract(29, 'days'),
         'endDate': moment(),
         ranges: {
            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
@@ -202,16 +202,6 @@ var circles = [];
 var crimes = [];
 function updateMap(searchBox, map){
 
-
-  // function setAllMap(map) {
-  //   for (var i = 0; i < markers.length; i++) {
-  //     markers[i].setMap(map);
-  //   }
-  //   markers = [];
-  //   console.log('it was loogedd');
-  // }
-  // setAllMap(null);
-
   var places = searchBox.getPlaces();
 
     if (places.length == 0) {
@@ -223,12 +213,7 @@ function updateMap(searchBox, map){
     for (var i = 0, circle; circle = circles[i]; i++) {
       circle.setMap(null);
     }
-    /*for (var i = 0, crime; crime = crimes[i]; i++) {
-      crime.setMap(null);
-    }*/
 
-
-    // For each place, get the icon, place name, and location.
     markers = [];
     circles = [];
     crimes = [];
@@ -256,8 +241,8 @@ function updateMap(searchBox, map){
     var startDate = picker.startDate.format(apiDateFormat);
     var endDate = picker.endDate.format(apiDateFormat);
 
-    console.log(startDate);
-    console.log(endDate);
+    // console.log(startDate);
+    // console.log(endDate);
 
     var requestUrl = "https://data.brla.gov/resource/5rji-ddnu.json?$where=(within_circle(geolocation,%20" + selectedLat + ",%20" + selectedLong + ",%20"+crimeRadius+") AND crime in("+formattedCrimeTypes+") AND offense_date between '"+startDate+"' and '"+endDate+"')";
     //var requestUrl = "https://data.brla.gov/resource/5rji-ddnu.json?$where=(within_circle(geolocation,%20" + selectedLat + ",%20" + selectedLong + ",%20"+crimeRadius+") AND crime in('"+selectedCrimeTypes+"'))";
@@ -291,18 +276,25 @@ function updateMap(searchBox, map){
                 fillOpacity: 0.9,
             },
             title: crime.crime,
-            position: crimePosition
+            position: crimePosition,
+            crime:crime
         });
 
-        // Create a marker for each place.
-        // var marker = new google.maps.Marker({
-        //   map: map,
-        //   icon: image,
-        //   title: crime.crime,
-        //   position: crimePosition
-        // });
+        var infoWindow = new google.maps.InfoWindow();
+        var crimeDate = moment(crime.offense_date).format('MMMM Do YYYY');
+        var content = '<h4>' + crime.crime + '</h4>' +
+                      '<p><strong>Offense: </strong>' + crime.offense_desc + ' ' + crime.offense + '</p>' +
+                      '<p><strong>Date: </strong>' + crimeDate + '</p>' +
+                      '<p><strong>Address: </strong>' + crime.address +'</p>';
+        google.maps.event.addListener(marker, 'click', (function(marker,content,infoWindow){
+          return function(){
+            infoWindow.setContent(content);
+            infoWindow.open(map, marker);
+          }
+        })(marker,content,infoWindow));
+
         markers.push(marker);
-        console.log(crime.crime);
+        //console.log(crime.crime);
       }
       var displayCrimeFormat = [];
 
@@ -325,7 +317,7 @@ function updateMap(searchBox, map){
         anchor: new google.maps.Point(17, 34),
         scaledSize: new google.maps.Size(25, 25)
       };
-      console.log(place.icon);
+      //console.log(place.icon);
 
       // Create a marker for each place.
       var marker = new google.maps.Marker({
@@ -335,16 +327,16 @@ function updateMap(searchBox, map){
         position: place.geometry.location
       });
       // Add circle overlay and bind to marker
-        var circle = new google.maps.Circle({
-          map: map,
-          radius: parseInt(crimeRadius),    // 2 miles in metres
-          strokeColor: '#FF0000',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          //fillColor: '#FF0000',
-          fillOpacity: 0.01,
-          center: place.geometry.location
-        });
+      var circle = new google.maps.Circle({
+        map: map,
+        radius: parseInt(crimeRadius),    // 2 miles in metres
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        //fillColor: '#FF0000',
+        fillOpacity: 0.01,
+        center: place.geometry.location
+      });
         //circle.bindTo('center', marker, 'position');
       circles.push(circle);
       markers.push(marker);
