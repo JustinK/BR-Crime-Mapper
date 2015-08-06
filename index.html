@@ -12,7 +12,6 @@
     <title>BR Crime Mapper</title>
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
-
     <link href="css/roboto.min.css" rel="stylesheet">
     <link href="css/material.min.css" rel="stylesheet">
     <link href="css/ripples.min.css" rel="stylesheet">
@@ -23,7 +22,7 @@
 
   <body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -37,7 +36,10 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
 
-            <li><a style="cursor:pointer;" data-toggle="modal" data-target="#complete-dialog">Disclaimer</a></li>
+            <li><a style="cursor:pointer;" data-toggle="modal" data-target="#about-dialog">About</a></li>
+            <li><a style="cursor:pointer;" data-toggle="modal" data-target="#disclaimer-dialog">Disclaimer</a></li>
+            <li><a style="cursor:pointer;" title="contact" href="mailto:justin@babalan.com?subject=Question about BR Crime Mapper">Contact</a></li>
+
           </ul>
         </div>
       </div>
@@ -56,7 +58,7 @@
 
                           <div class="col-lg-12">
                             <label for="select" class="control-label">Crimes (select one or more)</label>
-                              <select multiple="" class="form-control" id="crimeTypeSelect" style="height: 275px;">
+                              <select multiple="" class="form-control" id="crimeTypeSelect" size=15 style='height: 100%;'>
                                 <option class="default" value="ASSAULT" selected>Assault</option>
                                 <option value="BATTERY">Battery</option>
                                 <option value="BUSINESS ROBBERY">Business Robbery</option>
@@ -133,15 +135,14 @@
       </div>
 </div>
 
-<!-- <div class="row">
-  <div class="col-lg-12">
-        <div class="well bs-component">
-          <legend>Summary</legend>
-          <div id="summaryChart"></div>
-       </div>
-      </div>
-</div> -->
+
     </div>
+
+    <footer class="footer" style="position: fixed;bottom: 0;width: 100%;height: 25px;background-color: #f5f5f5;vertical-align:middle;text-align:center;">
+      <div class="container">
+        <p style="" class="text-muted">This app was created by <a href="http://www.babalan.com/about" target="_blank">Justin Kelly</a>.</p>
+      </div>
+    </footer>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places,geometry"></script>
@@ -160,24 +161,51 @@
             $.material.init();
         });
     </script>
+
   </body>
 
-  <div id="complete-dialog" class="modal fade" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h4 class="modal-title">Disclaimer</h4>
-      </div>
-      <div class="modal-body">
-        <p>This site uses data from <a href="https://data.brla.gov">Open Data BR</a>. This data includes crimes reported in Baton Rouge and handled by the Baton Rouge Police Department. Crimes displayed on this site include: Burglaries (Vehicle, Residential and Non-residential), Robberies (Individual and Business), Theft, Narcotics, Vice Crimes, Assault, Nuisance, Battery, Firearm, Homicides, and Criminal Damage to Property.</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal">Dismiss</button>
+  <div id="about-dialog" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title">About</h4>
+        </div>
+        <div class="modal-body">
+
+          <p>This site is intended to be a simple tool for viewing crime data for your local area.</p>
+
+          <p>The data comes from <a href="https://data.brla.gov" target="_blank">Open Data BR</a>. This data includes crimes reported in Baton Rouge and handled by the Baton Rouge Police Department. Crimes displayed on this site include: Burglaries (Vehicle, Residential and Non-residential), Robberies (Individual and Business), Theft, Narcotics, Vice Crimes, Assault, Nuisance, Battery, Firearm, Homicides, and Criminal Damage to Property.</p>
+
+          <p>Full source code for this site is available <a href="https://github.com/JustinK/BR-Crime-Mapper" target="_blank">here</a></p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-dismiss="modal">Dismiss</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+  <div id="disclaimer-dialog" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title">Disclaimer</h4>
+        </div>
+        <div class="modal-body">
+          <p>The information contained on this page is for general information purposes only. The information comes from <a href="https://data.brla.gov/Public-Safety/Baton-Rouge-Crime-Incidents/fabb-cnnu" target="_blank">Open Data BR</a> and we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability or availability with respect to the website or the information contained on the website for any purpose. Any reliance you place on such information is therefore strictly at your own risk.
+          </p>
+          <p>
+          In no event will we be liable for any loss or damage including without limitation, indirect or consequential loss or damage, or any loss or damage whatsoever arising from loss of data or profits arising out of, or in connection with, the use of this website.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
