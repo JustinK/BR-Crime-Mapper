@@ -1,7 +1,11 @@
 String.prototype.toProperCase = function () {
     return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 };
+
+google.maps.event.addDomListener(window, 'load', initializeMap);
+
 function initializeMap() {
+
   initializeDatePicker();
 
   var mapOptions = {
@@ -121,27 +125,22 @@ function initializeMap() {
 
   map.fitBounds(defaultBounds);
 
-  // Create the search box and link it to the UI element.
   var input = /** @type {HTMLInputElement} */(
       document.getElementById('pac-input'));
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
   var searchBox = new google.maps.places.SearchBox(/** @type {HTMLInputElement} */(input));
 
-  // [START region_getplaces]
-  // Listen for the event fired when the user selects an item from the
-  // pick list. Retrieve the matching places for that item.
   google.maps.event.addListener(searchBox, 'places_changed', function() {
     refreshResults(searchBox, map);
   });
-  // Bias the SearchBox results towards places that are within the bounds of the
-  // current map's viewport.
+
   google.maps.event.addListener(map, 'bounds_changed', function() {
     var bounds = map.getBounds();
     searchBox.setBounds(bounds);
   });
+
   google.maps.event.addListener(map, 'idle', function(ev){
-    
     var bounds = map.getBounds();
     var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
@@ -178,9 +177,18 @@ function initializeDatePicker(){
   }, cb);
 }
 
-var markers = [];
-var circles = [];
-var crimes = [];
+var mapComponents = (function(){
+    var markers = [];
+    var circles = [];
+    var crimes = [];
+
+    return {
+
+        markers: markers,
+        circles: circles,
+        crimes: crimes,
+    };
+})();
 
 function refreshResults(searchBox, map){
 
@@ -190,9 +198,9 @@ function refreshResults(searchBox, map){
   }
     clearMapComponents();
 
-    markers = [];
-    circles = [];
-    crimes = [];
+    mapComponents.markers = [];
+    mapComponents.circles = [];
+    mapComponents.crimes = [];
 
     
     var selectedLat = places[0].geometry.location.lat();
@@ -221,21 +229,81 @@ function refreshResults(searchBox, map){
     $.ajax({
       url: requestUrl
     }).done(function(data) {
-      drawCrimes(crimes, map, data, selectedCrimeTypes, places, picker);
+      drawCrimes(map, data, selectedCrimeTypes, places, picker);
+      drawChart(data, moment(startDate).format('MMMM Do YYYY'), moment(endDate).format('MMMM Do YYYY'));
     });
 
     setMapComponents(map, places, crimeRadius);
 }
 
+function drawChart(data, startDate, endDate){
+
+  var crimes = [];
+  var totals = [];
+  var groupedByDateData = _.groupBy(data, "crime");
+
+  _.each(groupedByDateData, function(item) {
+    var newPlot = {
+      'name': item[0].crime.toProperCase(),
+      'y': item.length,
+      'color': getIconColor(item[0].crime)
+    };
+    totals.push(newPlot);
+  });
+  totals = _.sortBy(totals, "y");
+  totals = totals.reverse();
+
+  $('#summaryChart').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Total Crimes - ' + startDate +' to ' + endDate
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: 'Total number by category'
+            }
+
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}<br/>'
+        },
+
+        series: [{
+            name: "Crimes",
+            colorByPoint: true,
+            data: totals
+        }],
+        
+    });
+}
+
 function clearMapComponents(places){
-  
-    for (var i = 0, marker; marker = markers[i]; i++) {
+    for (var i = 0, marker; marker = mapComponents.markers[i]; i++) {
       marker.setMap(null);
     }
-    for (var i = 0, circle; circle = circles[i]; i++) {
+    for (var i = 0, circle; circle = mapComponents.circles[i]; i++) {
       circle.setMap(null);
     }
 }
+
 function setMapBounds(map, place){
   var bounds = new google.maps.LatLngBounds();
   bounds.extend(place.geometry.location);
@@ -243,42 +311,43 @@ function setMapBounds(map, place){
   map.setZoom(14);
 }
 
-function drawCrimes(crimes, map, data, selectedCrimeTypes, places, picker){
+function drawCrimes(map, data, selectedCrimeTypes, places, picker){
 
   for (var i = 0, crime; crime = data[i]; i++) {
-        crimes.push(crime);
-        var crimePosition = new google.maps.LatLng(crime.geolocation.coordinates[1], crime.geolocation.coordinates[0]);
-        //console.log(crimePosition);
-        var marker = new google.maps.Marker({
-            map: map,
-            icon: {
-                path: fontawesome.markers.MAP_MARKER,
-                scale: 0.5,
-                strokeWeight: 0.2,
-                strokeColor: 'black',
-                strokeOpacity: 1,
-                fillColor: getIconColor(crime.crime),
-                fillOpacity: 0.9,
-            },
-            title: crime.crime,
-            position: crimePosition,
-            crime:crime
-        });
-        initializeInfoWindow(crime, marker, map);
-        markers.push(marker);
-        //console.log(crime.crime);
-      }
-      var displayCrimeFormat = [];
+    mapComponents.crimes.push(crime);
+    var crimePosition = new google.maps.LatLng(crime.geolocation.coordinates[1], crime.geolocation.coordinates[0]);
+    
+    var marker = new google.maps.Marker({
+        map: map,
+        icon: {
+            path: fontawesome.markers.MAP_MARKER,
+            scale: 0.5,
+            strokeWeight: 0.2,
+            strokeColor: 'black',
+            strokeOpacity: 1,
+            fillColor: getIconColor(crime.crime),
+            fillOpacity: 0.9,
+        },
+        title: crime.crime,
+        position: crimePosition,
+        crime:crime
+    });
+    initializeInfoWindow(crime, marker, map);
+    mapComponents.markers.push(marker);
 
-      $.each(selectedCrimeTypes, function(index, value){
+  }
+  var displayCrimeFormat = [];
 
-        displayCrimeFormat.push('<i style="color:'+getIconColor(value)+'" class="mdi-maps-place"></i> ' + value.toProperCase());
-      });
-      var displayCrimeFormat = displayCrimeFormat.join(',');
+  $.each(selectedCrimeTypes, function(index, value){
+    displayCrimeFormat.push('<i style="color:'+getIconColor(value)+'" class="mdi-maps-place"></i> ' + value.toProperCase());
+  });
 
-      var displayDateFormat = 'MMMM Do YYYY';
-      $("#reportHeader").html(crimes.length + " crimes ( " + displayCrimeFormat + " ) reported near <strong>" + places[0].name + '</strong> between ' + picker.startDate.format(displayDateFormat) + ' and ' + picker.endDate.format(displayDateFormat));
+  var displayCrimeFormat = displayCrimeFormat.join(',');
+
+  var displayDateFormat = 'MMMM Do YYYY';
+  $("#reportHeader").html(mapComponents.crimes.length + " crimes ( " + displayCrimeFormat + " ) reported near <strong>" + places[0].name + '</strong> between ' + picker.startDate.format(displayDateFormat) + ' and ' + picker.endDate.format(displayDateFormat));
 }
+
 function getIconColor(crimeType){
   var crimeColors = {
     "ASSAULT": '#536DFE', //
@@ -316,6 +385,7 @@ function initializeInfoWindow(crime, marker, map){
     }
   })(marker,content,infoWindow));
 }
+
 function setMapComponents(map, places, crimeRadius){
   for (var i = 0, place; place = places[i]; i++) {
       var image = {
@@ -325,16 +395,14 @@ function setMapComponents(map, places, crimeRadius){
         anchor: new google.maps.Point(17, 34),
         scaledSize: new google.maps.Size(25, 25)
       };
-      //console.log(place.icon);
-
-      // Create a marker for each place.
+      
       var marker = new google.maps.Marker({
         map: map,
         icon: image,
         title: place.name,
         position: place.geometry.location
       });
-      // Add circle overlay and bind to marker
+      
       var circle = new google.maps.Circle({
         map: map,
         radius: parseInt(crimeRadius),    // 2 miles in metres
@@ -345,9 +413,9 @@ function setMapComponents(map, places, crimeRadius){
         fillOpacity: 0.01,
         center: place.geometry.location
       });
-        //circle.bindTo('center', marker, 'position');
-      circles.push(circle);
-      markers.push(marker);
+      
+      mapComponents.circles.push(circle);
+      mapComponents.markers.push(marker);
 
       console.log('Selected place: ' + place.geometry.location);
       console.log('Selected name: ' + place.name);
@@ -357,4 +425,3 @@ function setMapComponents(map, places, crimeRadius){
     }
 }
 
-google.maps.event.addDomListener(window, 'load', initializeMap);
