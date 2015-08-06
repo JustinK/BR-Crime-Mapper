@@ -342,10 +342,11 @@ function drawCrimes(map, data, selectedCrimeTypes, places, picker){
     displayCrimeFormat.push('<i style="color:'+getIconColor(value)+'" class="mdi-maps-place"></i> ' + value.toProperCase());
   });
 
-  var displayCrimeFormat = displayCrimeFormat.join(',');
+  var displayCrimeFormat = displayCrimeFormat.join(' ');
 
-  var displayDateFormat = 'MMMM Do YYYY';
-  $("#reportHeader").html(mapComponents.crimes.length + " crimes ( " + displayCrimeFormat + " ) reported near <strong>" + places[0].name + '</strong> between ' + picker.startDate.format(displayDateFormat) + ' and ' + picker.endDate.format(displayDateFormat));
+  var displayDateFormat = 'MMMM D, YYYY';
+  $("#reportHeader").html(mapComponents.crimes.length + " crimes occurred near <strong>" + places[0].name + '</strong> between ' + picker.startDate.format(displayDateFormat) + ' and ' + picker.endDate.format(displayDateFormat));
+  $('#reportLegend').html(displayCrimeFormat);
 }
 
 function getIconColor(crimeType){
