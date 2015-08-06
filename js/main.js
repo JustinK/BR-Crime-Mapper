@@ -25,7 +25,7 @@ function initializeMap() {
             },
             {
                 "lightness": 37.599999999999994
-            }, 
+            },
             {
                 "gamma": 1
             }
@@ -118,7 +118,7 @@ function initializeMap() {
     }
   ];
   map.set('styles', customStyles);
-  
+
   var defaultBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(30.35717298822407, -91.2189121240234),
       new google.maps.LatLng(30.528847119783435, -90.9442539208984));
@@ -151,6 +151,17 @@ function initializeMap() {
     refreshResults(searchBox, map);
   });
 
+  $("#selectAllCheckbox").change(function() {
+    $('#crimeTypeSelect option').prop('selected', true);
+    var ischecked= $(this).is(':checked');
+    console.log(ischecked);
+    if(!ischecked){
+      $('#crimeTypeSelect option').not(".default").prop('selected', false);
+    }else{
+      $('#crimeTypeSelect option').prop('selected', true);
+    }
+  });
+
 }
 
 function initializeDatePicker(){
@@ -160,7 +171,7 @@ function initializeDatePicker(){
   cb(moment().subtract(29, 'days'), moment());
 
   $('#reportRange').daterangepicker({
-      
+
     'minDate': '01/01/2011',
     'maxDate': moment(),
     'startDate': moment().subtract(29, 'days'),
@@ -202,7 +213,7 @@ function refreshResults(searchBox, map){
     mapComponents.circles = [];
     mapComponents.crimes = [];
 
-    
+
     var selectedLat = places[0].geometry.location.lat();
     var selectedLong = places[0].geometry.location.lng();
 
@@ -223,7 +234,7 @@ function refreshResults(searchBox, map){
     var startDate = picker.startDate.format(apiDateFormat);
     var endDate = picker.endDate.format(apiDateFormat);
     var requestUrl = "https://data.brla.gov/resource/5rji-ddnu.json?$where=(within_circle(geolocation,%20" + selectedLat + ",%20" + selectedLong + ",%20"+crimeRadius+") AND crime in("+formattedCrimeTypes+") AND offense_date between '"+startDate+"' and '"+endDate+"')";
-    
+
     console.log(requestUrl);
 
     $.ajax({
@@ -234,6 +245,7 @@ function refreshResults(searchBox, map){
     });
 
     setMapComponents(map, places, crimeRadius);
+    $('#reportLegend').show();
 }
 
 function drawChart(data, startDate, endDate){
@@ -291,7 +303,7 @@ function drawChart(data, startDate, endDate){
             colorByPoint: true,
             data: totals
         }],
-        
+
     });
 }
 
@@ -316,7 +328,7 @@ function drawCrimes(map, data, selectedCrimeTypes, places, picker){
   for (var i = 0, crime; crime = data[i]; i++) {
     mapComponents.crimes.push(crime);
     var crimePosition = new google.maps.LatLng(crime.geolocation.coordinates[1], crime.geolocation.coordinates[0]);
-    
+
     var marker = new google.maps.Marker({
         map: map,
         icon: {
@@ -359,7 +371,7 @@ function getIconColor(crimeType){
     "HOMICIDE": '#D32F2F',
     "INDIVIDUAL ROBBERY": '#8BC34A',
     "NARCOTICS": '#FFEB3B',
-    "NON_RESIDENTIAL BURGLARY": '#388E3C',
+    "NON-RESIDENTIAL BURGLARY": '#388E3C',
     "NUISANCE": '#9E9E9E',
     "RESIDENTIAL BURGLARY": '#388E3C',
     "ROBBERY": '#FF5772',
@@ -396,14 +408,14 @@ function setMapComponents(map, places, crimeRadius){
         anchor: new google.maps.Point(17, 34),
         scaledSize: new google.maps.Size(25, 25)
       };
-      
+
       var marker = new google.maps.Marker({
         map: map,
         icon: image,
         title: place.name,
         position: place.geometry.location
       });
-      
+
       var circle = new google.maps.Circle({
         map: map,
         radius: parseInt(crimeRadius),    // 2 miles in metres
@@ -414,13 +426,13 @@ function setMapComponents(map, places, crimeRadius){
         fillOpacity: 0.01,
         center: place.geometry.location
       });
-      
+
       mapComponents.circles.push(circle);
       mapComponents.markers.push(marker);
 
       console.log('Selected place: ' + place.geometry.location);
       console.log('Selected name: ' + place.name);
-      
+
       setMapBounds(map, place);
 
     }

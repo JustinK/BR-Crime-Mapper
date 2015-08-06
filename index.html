@@ -43,61 +43,61 @@
       </div>
     </nav>
 
-    <div class="col-lg-12" style="margin-top:100px;padding-left:200px;padding-right:200px;">
+    <div class="col-lg-12" style="margin-top:100px;">
 <div class="row">
-      <div class="col-lg-8">
-        <div class="well bs-component">
-          <legend id="reportHeader"></legend>
-          <p id="reportLegend"></p>
-          <input id="pac-input" class="controls" type="text" placeholder="Enter address to find recent crimes nearby">
-          <div id="map-canvas"></div>
-       </div>
-      </div>
 
-      <div class="col-lg-4">
+
+      <div class="col-lg-3">
           <div class="well bs-component">
               <form class="form-horizontal">
                       <legend>Search Options</legend>
-                      
+
                       <div class="form-group">
-                          
+
                           <div class="col-lg-12">
-                            <label for="select" class="control-label">Crimes</label>
+                            <label for="select" class="control-label">Crimes (select one or more)</label>
                               <select multiple="" class="form-control" id="crimeTypeSelect" style="height: 275px;">
-                                  <option value="ASSAULT" selected>Assault</option>
-                                  <option value="BATTERY">Battery</option>
-                                  <option value="BUSINESS ROBBERY">Business Robbery</option>
-                                  <option value="CRIMINAL DAMAGE TO PROPERTY">Criminal Damage To Property</option>
-                                  <option value="FIREARM">Firearm</option>
-                                  <option value="HOMICIDE">Homicide</option>
-                                  <option value="INDIVIDUAL ROBBERY">Individual Robbery</option>
-                                  <option value="NARCOTICS">Narcotics</option>
-                                  <option value="NON_RESIDENTIAL BURGLARY"> Non-Residential Burglary</option>
-                                  <option value="NUISANCE">Nuisance</option>
-                                  <option value="RESIDENTIAL BURGLARY">Residential Burglary</option>
-                                  <option value="ROBBERY">Robbery</option>
-                                  <option value="THEFT">Theft</option>
-                                  <option value="VEHICLE BURGLARY">Vehicle Burglary</option>
-                                  <option value="VICE">Vice</option>
+                                <option class="default" value="ASSAULT" selected>Assault</option>
+                                <option value="BATTERY">Battery</option>
+                                <option value="BUSINESS ROBBERY">Business Robbery</option>
+                                <option value="CRIMINAL DAMAGE TO PROPERTY">Criminal Damage To Property</option>
+                                <option value="FIREARM" selected>Firearm</option>
+                                <option value="HOMICIDE" selected>Homicide</option>
+                                <option value="INDIVIDUAL ROBBERY">Individual Robbery</option>
+                                <option value="NARCOTICS">Narcotics</option>
+                                <option value="NON-RESIDENTIAL BURGLARY"> Non-Residential Burglary</option>
+                                <option value="NUISANCE">Nuisance</option>
+                                <option value="RESIDENTIAL BURGLARY">Residential Burglary</option>
+                                <option value="ROBBERY">Robbery</option>
+                                <option value="THEFT">Theft</option>
+                                <option value="VEHICLE BURGLARY">Vehicle Burglary</option>
+                                <option value="VICE">Vice</option>
                               </select>
+                              <br>
+                              <div class="togglebutton">
+                                  <label>
+                                      <input id="selectAllCheckbox" type="checkbox"> Select all crimes
+                                  </label>
+                              </div>
                           </div>
                       </div>
+
                       <div class="form-group">
-                          
+
                           <div class="col-lg-12">
-                            <label for="select" class="control-label">Search Radius (in miles)</label>
+                            <label for="select" class="control-label">Search Radius</label>
                               <select class="form-control" id="radiusSelect">
-                                  <option value="805">.5</option>
-                                  <option value="1609" selected>1</option>
-                                  <option value="3219">2</option>
-                                  <option value="4828">3</option>
-                                  <option value="8047">5</option>
-                                  <option value="16093">10</option>
+                                  <option value="805">.5 miles</option>
+                                  <option value="1609" selected>1 mile</option>
+                                  <option value="3219">2 miles</option>
+                                  <option value="4828">3 miles</option>
+                                  <option value="8047">5 miles</option>
+                                  <option value="16093">10 miles</option>
                               </select>
                           </div>
                       </div>
                       <div class="form-group">
-                          
+
                           <div class="col-lg-12">
                             <label for="select" class="control-label">Date Range</label>
                       <div id="reportRange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
@@ -108,23 +108,39 @@
                       </div>
                       <div class="form-group">
                           <div class="col-lg-12">
-                              <div id="refreshButton" class="btn btn-primary">Reload Results<div class="ripple-wrapper"></div></div>
+                              <div id="refreshButton" class="btn btn-primary">Refresh Results<div class="ripple-wrapper"></div></div>
                           </div>
                       </div>
               </form>
           <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div></div>
       </div>
+      <div class="col-lg-9">
+        <div class="well bs-component">
+          <legend id="reportHeader"></legend>
+          <div class="panel panel-default">
+            <div>
+                <p id="reportLegend" class="panel-body" style="display:none"></p>
+            </div>
+          </div>
 
+          <input id="pac-input" class="controls" type="text" placeholder="Enter address to find recent crimes nearby">
+          <div id="map-canvas"></div>
+
+          <br><br>
+          <div id="summaryChart"></div>
+
+       </div>
+      </div>
 </div>
 
-<div class="row">
+<!-- <div class="row">
   <div class="col-lg-12">
         <div class="well bs-component">
           <legend>Summary</legend>
           <div id="summaryChart"></div>
        </div>
       </div>
-</div>
+</div> -->
     </div>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
